@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>APECS Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#15317E;--gold:#A08850;--gold-soft:#F5EFE2;--teal:#4E9AB4;--teal-ink:#2A6F89;--teal-soft:#E6F2F6;--bg:#F1F1F1;--line:#DDE1E8;--ink:#1B2233;--muted:#525B70;--ok:#2C7A4B;--ok-soft:#E6F3EB;--bad:#B03A34;--bad-soft:#F9E8E6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 60px}
+header{background:#fff;border-bottom:3px solid var(--navy);box-shadow:0 3px 0 var(--gold);margin-bottom:24px}
+header .wrap{padding-top:14px;padding-bottom:14px;display:flex;align-items:baseline;gap:10px}
+.wordmark{font-family:"Libre Baskerville",Georgia,serif;font-weight:700;font-size:24px;color:var(--navy)}
+.wordmark span{color:var(--teal)}
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 2px rgba(14,35,96,.06),0 4px 14px rgba(14,35,96,.06);padding:20px;margin-bottom:16px}
+h1,h2{color:var(--navy);margin:0 0 8px;line-height:1.3} h1{font-size:22px} h2{font-size:17px}
+.step{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;margin-right:8px}
+p{margin:0 0 10px}.sub{color:var(--muted);font-size:14px}
+textarea,input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font:13px/1.5 ui-monospace,Menlo,monospace;background:#fff}
+input[type=password]{font:15px Inter,sans-serif;margin-bottom:10px}
+textarea{min-height:140px}
+.btn{border:0;border-radius:10px;padding:10px 18px;font:600 14px Inter,sans-serif;cursor:pointer;background:var(--navy);color:#fff}
+.btn:disabled{background:#8A93A8;cursor:not-allowed}
+.btn-ghost{background:var(--teal-soft);color:var(--teal-ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.warn{background:var(--gold-soft);border-left:4px solid var(--gold);padding:12px 14px;border-radius:8px;font-size:14px;margin-bottom:16px}
+.report{font-size:14px;margin-top:12px}
+.report .ok{background:var(--ok-soft);color:#1E5534;border-radius:8px;padding:10px 12px}
+.report .bad{background:var(--bad-soft);color:#7E2A25;border-radius:8px;padding:10px 12px;margin-top:8px}
+.report .wn{background:var(--gold-soft);color:#6E5A2C;border-radius:8px;padding:10px 12px;margin-top:8px}
+.report ul{margin:4px 0 0;padding-left:18px}
+table{border-collapse:collapse;font-size:13px;margin-top:8px;width:100%}
+td,th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}
+pre{background:#F6F7FA;border-radius:8px;padding:10px 12px;font-size:13px;overflow:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header><div class="wrap"><span class="wordmark">APE<span>CS</span></span><b style="color:var(--muted);font-size:14px">Admin · Encrypt question bank</b></div></header>
+<div class="wrap">
+  <div class="warn"><b>Everything happens in your browser.</b> Nothing on this page is uploaded anywhere. Never upload a plain <code>weekNN.json</code> to GitHub, only the <code>.enc.json</code> this page produces.</div>
+
+  <div class="card">
+    <h2><span class="step">1</span>Load the week's JSON</h2>
+    <p class="sub">Choose one or more <code>weekNN.json</code> files from the Claude Project (/내보내기), or paste one below.</p>
+    <input type="file" id="files" accept=".json,application/json" multiple>
+    <p class="sub" style="margin:10px 0 4px">…or paste JSON:</p>
+    <textarea id="paste" placeholder='{ "week": 3, "title": "...", "topics": [...], "concepts": [...], "questions": [...] }'></textarea>
+    <div class="row"><button class="btn btn-ghost" id="validateBtn">Validate</button></div>
+    <div class="report" id="report"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step">2</span>Encrypt</h2>
+    <p class="sub">Use the batch password. Every week must use the same password.</p>
+    <input type="password" id="pw1" placeholder="Batch password" autocomplete="new-password">
+    <input type="password" id="pw2" placeholder="Type it again" autocomplete="new-password">
+    <div class="row"><button class="btn" id="encBtn" disabled>Encrypt & download</button><span class="sub" id="encMsg"></span></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step">3</span>Upload to GitHub</h2>
+    <p>Upload the downloaded <code>.enc.json</code> file(s) into the <code>data/</code> folder, then add these lines to <code>data/manifest.json</code> (inside the <code>"weeks"</code> list):</p>
+    <pre id="manifestOut">Encrypt first to generate the lines.</pre>
+  </div>
+
+  <div class="card">
+    <h2>Optional: test an encrypted file</h2>
+    <p class="sub">Check that an <code>.enc.json</code> opens with a password before uploading.</p>
+    <input type="file" id="testFile" accept=".json">
+    <input type="password" id="testPw" placeholder="Password" style="margin-top:10px">
+    <div class="row"><button class="btn btn-ghost" id="testBtn">Test decrypt</button></div>
+    <div class="report" id="testOut"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ITER = 310000;
+let LOADED = []; // [{name, data}]
+
+function b64e(bytes){ let s = ""; for(let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); }
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function deriveKey(pw, salt, iter, usage){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:iter, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, [usage]);
+}
+async function encrypt(obj, pw){
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(pw, salt, ITER, "encrypt");
+  const ct = new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM", iv}, key, new TextEncoder().encode(JSON.stringify(obj))));
+  return { v:1, alg:"AES-256-GCM", kdf:"PBKDF2-SHA256", iter:ITER, salt:b64e(salt), iv:b64e(iv), ct:b64e(ct) };
+}
+async function decrypt(env, pw){
+  const key = await deriveKey(pw, b64d(env.salt), env.iter, "decrypt");
+  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM", iv:b64d(env.iv)}, key, b64d(env.ct))));
+}
+
+/* ---------- validation (mirrors Project instructions §9) ---------- */
+function validate(d){
+  const E = [], W = [];
+  if(typeof d.week !== "number") E.push("Top-level 'week' must be a number.");
+  if(!d.title) E.push("Top-level 'title' is missing.");
+  if(!Array.isArray(d.questions)) { E.push("'questions' must be a list."); return {E, W}; }
+  const topicIds = new Set((d.topics || []).map(t => t.id));
+  const conceptIds = new Set((d.concepts || []).map(c => c.id));
+  if(!(d.topics || []).length) W.push("No 'topics' listed — topic filters will show raw ids.");
+  const ids = new Set(), cases = {};
+  d.questions.forEach((q, n) => {
+    const tag = q.id || `question #${n + 1}`;
+    for(const f of ["id","topic","type","prompt","answer","explanation"]) if(q[f] === undefined) E.push(`${tag}: missing '${f}'.`);
+    if(ids.has(q.id)) E.push(`${tag}: duplicate id.`); ids.add(q.id);
+    if(![1,2,3].includes(q.difficulty)) W.push(`${tag}: difficulty should be 1, 2 or 3.`);
+    if(q.topic && topicIds.size && !topicIds.has(q.topic)) W.push(`${tag}: topic '${q.topic}' is not in 'topics'.`);
+    if(q.verified !== true) W.push(`${tag}: not marked verified.`);
+    if(q.type === "mcq"){
+      const keys = (q.options || []).map(o => o.key);
+      if(keys.length < 2) E.push(`${tag}: MCQ needs options.`);
+      if(!keys.includes(q.answer)) E.push(`${tag}: answer '${q.answer}' is not one of the option keys.`);
+      if(new Set(keys).size !== keys.length) E.push(`${tag}: duplicate option keys.`);
+      const texts = (q.options || []).map(o => String(o.text).trim().toLowerCase());
+      if(new Set(texts).size !== texts.length) E.push(`${tag}: two options have the same text.`);
+      for(const k of Object.keys(q.explanation?.why_wrong || {})) if(!keys.includes(k)) W.push(`${tag}: why_wrong has unknown key '${k}'.`);
+    }else if(q.type === "numeric" || q.type === "multi_numeric"){
+      if(!Array.isArray(q.answer) || !q.answer.every(x => typeof x === "number")) E.push(`${tag}: answer must be a list of numbers.`);
+      else{
+        if(q.type === "numeric" && q.answer.length !== 1) E.push(`${tag}: numeric needs exactly 1 answer value.`);
+        if(q.type === "multi_numeric"){
+          if(!q.labels || q.labels.length !== q.answer.length) E.push(`${tag}: labels count must equal answer count.`);
+          if(q.format && q.format.split(",").length !== q.answer.length) E.push(`${tag}: format shows ${q.format.split(",").length} values but answer has ${q.answer.length}.`);
+        }
+        if(Array.isArray(q.tolerance) && q.tolerance.length !== q.answer.length) E.push(`${tag}: tolerance list length must equal answer count.`);
+        if(q.answer.some(x => Math.round(x * 100) !== x * 100)) W.push(`${tag}: answer has more than 2 decimal places.`);
+      }
+    }else E.push(`${tag}: unknown type '${q.type}'.`);
+    if(q.case_id){ (cases[q.case_id] ||= []).push(q); }
+  });
+  for(const [cid, parts] of Object.entries(cases)){
+    if(new Set(parts.map(p => p.case_stem)).size > 1) E.push(`Case ${cid}: parts have different case_stem text.`);
+    if(parts.some(p => !p.part)) W.push(`Case ${cid}: some parts have no 'part' letter.`);
+  }
+  for(const c of d.concepts || []){
+    if(!c.id || !c.title) E.push(`Concept '${c.id || "?"}': needs id and title.`);
+    for(const f of c.formulas || []) for(const v of f.variables || []) if(!v.symbol || !v.meaning) W.push(`Concept '${c.id}': a variable is missing symbol or meaning.`);
+  }
+  for(const t of topicIds) if(!conceptIds.has(t)) W.push(`Topic '${t}' has no concept card.`);
+  return {E, W};
+}
+function summary(d){
+  const q = d.questions || [], by = (f) => q.reduce((m, x) => (m[f(x)] = (m[f(x)] || 0) + 1, m), {});
+  const t = by(x => x.topic), ty = by(x => x.type), df = by(x => "L" + x.difficulty);
+  return `<table><tr><th>Week ${esc(d.week)}</th><th>${esc(d.title)}</th></tr>
+    <tr><td>Questions</td><td>${q.length} · ${Object.entries(ty).map(([k,v]) => `${esc(k)} ${v}`).join(" · ")}</td></tr>
+    <tr><td>Difficulty</td><td>${Object.entries(df).sort().map(([k,v]) => `${k} ${v}`).join(" · ")}</td></tr>
+    <tr><td>Topics</td><td>${Object.entries(t).map(([k,v]) => `${esc(k)} ${v}`).join(" · ")}</td></tr>
+    <tr><td>Concept cards</td><td>${(d.concepts || []).length}</td></tr></table>`;
+}
+
+async function gather(){
+  const out = [];
+  for(const f of $("#files").files) out.push({ name:f.name, text:await f.text() });
+  if($("#paste").value.trim()) out.push({ name:"pasted JSON", text:$("#paste").value });
+  return out;
+}
+$("#validateBtn").addEventListener("click", async () => {
+  const srcs = await gather(), rep = $("#report");
+  LOADED = []; rep.innerHTML = "";
+  if(!srcs.length){ rep.innerHTML = `<div class="bad">Choose a file or paste JSON first.</div>`; updateEnc(); return; }
+  let html = "", allOk = true;
+  for(const s of srcs){
+    let d;
+    try{ d = JSON.parse(s.text); }catch(e){ html += `<div class="bad"><b>${esc(s.name)}</b>: not valid JSON — ${esc(e.message)}</div>`; allOk = false; continue; }
+    const {E, W} = validate(d);
+    html += `<h2 style="margin-top:14px">${esc(s.name)}</h2>${summary(d)}`;
+    html += E.length ? `<div class="bad"><b>${E.length} error(s) — fix before encrypting</b><ul>${E.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : `<div class="ok" style="margin-top:8px">No errors.</div>`;
+    if(W.length) html += `<div class="wn"><b>${W.length} warning(s)</b><ul>${W.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    if(E.length) allOk = false; else LOADED.push({ name:s.name, data:d });
+  }
+  rep.innerHTML = html;
+  if(!allOk && LOADED.length && !confirm("Some files have errors. Encrypt only the valid ones?")) LOADED = [];
+  updateEnc();
+});
+function updateEnc(){ $("#encBtn").disabled = !LOADED.length; }
+
+$("#encBtn").addEventListener("click", async () => {
+  const p1 = $("#pw1").value, p2 = $("#pw2").value, msg = $("#encMsg");
+  if(!p1){ msg.textContent = "Enter the password."; return; }
+  if(p1 !== p2){ msg.textContent = "Passwords don't match."; return; }
+  msg.textContent = "Encrypting…";
+  const lines = [];
+  for(const {data} of LOADED){
+    const env = await encrypt(data, p1);
+    const back = await decrypt(env, p1); // round-trip check
+    if(JSON.stringify(back) !== JSON.stringify(data)){ msg.textContent = "Round-trip check failed. Nothing downloaded."; return; }
+    const file = `week${String(data.week).padStart(2, "0")}.enc.json`;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(env)], {type:"application/json"}));
+    a.download = file; document.body.appendChild(a); a.click(); a.remove();
+    lines.push(`    { "week": ${data.week}, "file": "${file}", "title": ${JSON.stringify(data.title)} }`);
+  }
+  $("#manifestOut").textContent = lines.join(",\n");
+  msg.textContent = `Done: ${lines.length} file(s) downloaded.`;
+});
+
+$("#testBtn").addEventListener("click", async () => {
+  const f = $("#testFile").files[0], out = $("#testOut");
+  if(!f){ out.innerHTML = `<div class="bad">Choose an .enc.json file.</div>`; return; }
+  try{
+    const d = await decrypt(JSON.parse(await f.text()), $("#testPw").value);
+    out.innerHTML = `<div class="ok">Opens correctly.</div>${summary(d)}`;
+  }catch(e){ out.innerHTML = `<div class="bad">Could not decrypt — wrong password or damaged file.</div>`; }
+});
+</script>
+</body>
+</html>

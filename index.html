@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>APECS Technicals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#15317E; --navy-deep:#0E2360; --gold:#A08850; --gold-soft:#F5EFE2;
+  --teal:#4E9AB4; --teal-ink:#2A6F89; --teal-soft:#E6F2F6;
+  --bg:#F1F1F1; --card:#FFFFFF; --slate:#8A93A8; --line:#DDE1E8;
+  --ink:#1B2233; --muted:#525B70;
+  --ok:#2C7A4B; --ok-soft:#E6F3EB; --bad:#B03A34; --bad-soft:#F9E8E6;
+  --radius:12px; --shadow:0 1px 2px rgba(14,35,96,.06),0 4px 14px rgba(14,35,96,.06);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* Header */
+header.top{background:var(--card);border-bottom:3px solid var(--navy);box-shadow:0 3px 0 0 var(--gold)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:14px}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.wordmark{font-family:"Libre Baskerville",Georgia,serif;font-weight:700;font-size:26px;letter-spacing:.5px;color:var(--navy);line-height:1}
+.wordmark span{color:var(--teal)}
+.brand small{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav.tabs{display:flex;gap:4px;margin-top:16px;border-bottom:1px solid var(--line)}
+nav.tabs button{background:none;border:0;padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+nav.tabs button[aria-selected=true]{color:var(--navy);border-bottom-color:var(--gold)}
+main{padding:20px 0 60px}
+
+/* Cards and controls */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+h1,h2,h3{color:var(--navy);line-height:1.3;margin:0 0 8px}
+h1{font-size:24px} h2{font-size:19px} h3{font-size:17px}
+.sub{color:var(--muted);font-size:14px;margin:0}
+.label{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.label:first-child{margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:500}
+.chip-btn[aria-pressed=true]{border-color:var(--navy);background:var(--navy);color:#fff}
+.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--card);padding:8px 14px;font-size:14px;font-weight:500;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--navy);color:#fff}
+.btn{border:0;border-radius:10px;padding:12px 20px;font-weight:600;font-size:15px}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:disabled{background:var(--slate);cursor:not-allowed}
+.btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn-teal{background:var(--teal-soft);color:var(--teal-ink)}
+.btn-link{background:none;border:0;padding:0;color:var(--teal-ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.spacer{flex:1}
+.match{font-size:14px;color:var(--muted)}
+.match b{color:var(--navy)}
+.notice{background:var(--gold-soft);border-left:4px solid var(--gold);padding:12px 14px;border-radius:8px;font-size:14px;margin-bottom:16px}
+
+/* Gate */
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.gate .card{width:100%;max-width:400px;padding:32px 28px;border-top:4px solid var(--navy)}
+.gate .wordmark{font-size:40px;display:block;text-align:center}
+.gate .tag{text-align:center;color:var(--gold);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:8px 0 24px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.field{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-size:16px;background:#fff}
+.field:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin:12px 0 18px}
+.err{color:var(--bad);font-size:14px;min-height:22px;margin-top:8px}
+
+/* Quiz */
+.qhead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.qhead .count{font-weight:600;color:var(--navy);font-size:15px}
+.bar{height:6px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:18px}
+.bar span{display:block;height:100%;background:var(--teal);border-radius:999px;transition:width .25s}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:#EEF1F6;color:var(--muted)}
+.tag.lvl{background:var(--gold-soft);color:#6E5A2C}
+.case{background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:15px}
+.case b{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#6E5A2C;margin-bottom:4px}
+.prompt{font-size:17px;font-weight:600;color:var(--ink);line-height:1.55;margin:0 0 16px}
+.opts{display:grid;gap:10px;margin-bottom:16px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:12px 14px;font-size:15px;line-height:1.5}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#EEF1F6;font-weight:700;font-size:13px;color:var(--navy)}
+.opt:hover:not(:disabled){border-color:var(--slate)}
+.opt.sel{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy)}
+.opt.sel .k{background:var(--navy);color:#fff}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .k{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .k{background:var(--bad);color:#fff}
+.opt:disabled{cursor:default}
+.fmt{font-size:14px;color:var(--muted);margin:0 0 8px}
+.fmt code{background:#EEF1F6;padding:2px 6px;border-radius:5px;font-size:13px;color:var(--navy)}
+.labels{font-size:13px;color:var(--muted);margin:8px 0 0}
+.fb{border-radius:10px;padding:12px 14px;margin:0 0 16px;font-size:15px}
+.fb.ok{background:var(--ok-soft);color:#1E5534}
+.fb.bad{background:var(--bad-soft);color:#7E2A25}
+.fb strong{display:block;font-size:16px;margin-bottom:2px}
+.fb ul{margin:6px 0 0;padding-left:18px}
+.fb .tip{display:block;margin-top:6px;font-size:13px;opacity:.9}
+.expl{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+.expl h4{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.expl h4:first-child{margin-top:0}
+.expl ol,.expl ul{margin:0;padding-left:20px}
+.expl li{margin:3px 0}
+.expl .trap{background:var(--gold-soft);border-radius:8px;padding:10px 12px}
+.expl .take{background:var(--teal-soft);border-radius:8px;padding:10px 12px;color:#1E4E60}
+.mono{font-variant-numeric:tabular-nums}
+
+/* Results */
+.score{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.ring{--p:0;width:108px;height:108px;border-radius:50%;background:conic-gradient(var(--teal) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
+.ring div{width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:700;font-size:22px;color:var(--navy)}
+.trow{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.trow:last-child{border-bottom:0}
+.minibar{grid-column:1/-1;height:6px;border-radius:999px;background:var(--line);overflow:hidden}
+.minibar span{display:block;height:100%;background:var(--teal)}
+.minibar span.lo{background:var(--bad)}
+.minibar span.mid{background:var(--gold)}
+
+/* Concepts */
+details.concept{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+details.concept>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:12px;align-items:flex-start}
+details.concept>summary::-webkit-details-marker{display:none}
+details.concept>summary::after{content:"+";margin-left:auto;font-size:22px;line-height:1;color:var(--gold);font-weight:600}
+details.concept[open]>summary::after{content:"−"}
+details.concept[open]>summary{border-bottom:1px solid var(--line)}
+.cbody{padding:4px 20px 20px}
+.cbody h4{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.formula{border:1.5px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+.formula .fname{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:6px}
+.formula .expr{font-size:16px;font-weight:600;background:#F6F7FA;border-radius:8px;padding:10px 12px;margin-bottom:10px;color:var(--ink);overflow-wrap:anywhere}
+.vars{display:grid;gap:8px}
+.var{display:grid;grid-template-columns:150px 1fr;gap:2px 12px;font-size:14px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.var:last-child{border-bottom:0;padding-bottom:0}
+.var .sym{font-weight:700;color:var(--teal-ink)}
+.var .where{grid-column:2;color:var(--muted);font-size:13px}
+@media (max-width:520px){ .var{grid-template-columns:1fr} .var .where{grid-column:1} }
+.cbody ul{margin:0;padding-left:20px}
+.cbody li{margin:3px 0}
+.reveal{margin-top:8px}
+.srcs{font-size:12px;color:var(--muted);margin-top:16px}
+
+dialog{border:0;border-radius:var(--radius);padding:0;width:min(720px,calc(100% - 32px));max-height:85vh;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(14,35,96,.35)}
+dialog .dhead{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff}
+dialog .dbody{padding:0 0 8px;overflow:auto}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.foot{text-align:center;font-size:12px;color:var(--slate);padding:20px 0}
+
+@media (max-width:520px){
+  body{font-size:15px}
+  .card{padding:16px}
+  .wordmark{font-size:22px}
+  .brand small{display:none}
+  nav.tabs button{padding:10px 10px}
+  .prompt{font-size:16px}
+  .btn{padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- Password gate -->
+<section id="gate" class="gate hidden">
+  <form class="card" id="gateForm" autocomplete="off">
+    <span class="wordmark">APE<span>CS</span></span>
+    <div class="tag">Technical Question Bank</div>
+    <label for="pw" class="label">Batch password</label>
+    <input id="pw" class="field" type="password" autocomplete="current-password" required>
+    <label class="check"><input type="checkbox" id="remember" checked> Remember on this device</label>
+    <button class="btn btn-primary" style="width:100%" id="unlockBtn">Unlock</button>
+    <div class="err" id="gateErr" role="alert"></div>
+  </form>
+</section>
+
+<!-- App -->
+<div id="app" class="hidden">
+  <header class="top">
+    <div class="wrap">
+      <div class="brand"><span class="wordmark">APE<span>CS</span></span><small>Technical Question Bank</small></div>
+      <button class="btn-link" id="lockBtn" style="font-size:14px">Lock</button>
+    </div>
+  </header>
+  <div class="wrap">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-view="practice" aria-selected="true">Practice</button>
+      <button role="tab" data-view="concepts" aria-selected="false">Concepts</button>
+      <button role="tab" data-view="progress" aria-selected="false">Progress</button>
+    </nav>
+    <main id="view"></main>
+    <div class="foot">For APECS analyst batch 26/27 · internal use only</div>
+  </div>
+</div>
+
+<dialog id="conceptDlg">
+  <div class="dhead"><h3 style="margin:0" id="dlgTitle">Concept</h3><button class="btn-link" id="dlgClose">Close</button></div>
+  <div class="dbody" id="dlgBody"></div>
+</dialog>
+
+<script>
+"use strict";
+/* ---------- storage (always guarded) ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const K = { pw:"apecs_pw", prog:"apecs_progress_v1", sess:"apecs_session_v1", prefs:"apecs_prefs_v1" };
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const pct = (a,b) => b ? Math.round(a/b*100) : 0;
+const LVL = {1:"Level 1",2:"Level 2",3:"Level 3"};
+
+/* ---------- decryption ---------- */
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function decryptEnvelope(env, password){
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt:b64d(env.salt), iterations:env.iter, hash:"SHA-256"},
+    base, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64d(env.iv)}, key, b64d(env.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+
+/* ---------- data ---------- */
+let DB = { weeks:[], questions:[], concepts:{}, topics:{} };
+
+async function loadAll(password){
+  const res = await fetch("data/manifest.json", {cache:"no-cache"});
+  if(!res.ok) throw new Error("Could not load data/manifest.json");
+  const manifest = await res.json();
+  const weeks = [];
+  for(const w of manifest.weeks || []){
+    const r = await fetch("data/" + w.file, {cache:"no-cache"});
+    if(!r.ok) throw new Error("Missing file: data/" + w.file);
+    const env = await r.json();
+    let data;
+    try{ data = await decryptEnvelope(env, password); }
+    catch(e){ const err = new Error("WRONG_PASSWORD"); err.file = w.file; throw err; }
+    data.week = data.week ?? w.week;
+    data.title = data.title || w.title;
+    weeks.push(data);
+  }
+  weeks.sort((a,b) => a.week - b.week);
+  const db = { weeks, questions:[], concepts:{}, topics:{} };
+  for(const w of weeks){
+    for(const t of w.topics || []) db.topics[t.id] = { ...t, week:w.week };
+    for(const c of w.concepts || []) db.concepts[c.id] = { ...c, week:c.week ?? w.week };
+    for(const q of w.questions || []) db.questions.push({ ...q, week:q.week ?? w.week });
+  }
+  return db;
+}
+const topicName = id => DB.topics[id]?.name || DB.concepts[id]?.title || id;
+
+/* ---------- progress ---------- */
+let PROG = store.get(K.prog, {});
+function record(q, correct){
+  const p = PROG[q.id] || {a:0, c:0};
+  p.a += 1; if(correct) p.c += 1; p.last = correct ? 1 : 0; p.t = Date.now();
+  PROG[q.id] = p; store.set(K.prog, PROG);
+}
+
+/* ---------- boot ---------- */
+async function unlock(password, remember){
+  const btn = $("#unlockBtn");
+  btn.disabled = true; btn.textContent = "Unlocking…"; $("#gateErr").textContent = "";
+  try{
+    DB = await loadAll(password);
+    if(remember) store.set(K.pw, password); else store.del(K.pw);
+    $("#gate").classList.add("hidden"); $("#app").classList.remove("hidden");
+    route("practice");
+  }catch(e){
+    store.del(K.pw);
+    $("#gate").classList.remove("hidden"); $("#app").classList.add("hidden");
+    $("#gateErr").textContent = e.message === "WRONG_PASSWORD" ? "Wrong password. Please try again." : e.message;
+  }finally{
+    btn.disabled = false; btn.textContent = "Unlock";
+  }
+}
+$("#gateForm").addEventListener("submit", e => { e.preventDefault(); unlock($("#pw").value, $("#remember").checked); });
+$("#lockBtn").addEventListener("click", () => { store.del(K.pw); DB = {weeks:[],questions:[],concepts:{},topics:{}}; $("#pw").value=""; $("#app").classList.add("hidden"); $("#gate").classList.remove("hidden"); });
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => route(b.dataset.view)));
+
+function route(view){
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === view));
+  if(view === "practice") renderSetup();
+  if(view === "concepts") renderConcepts();
+  if(view === "progress") renderProgress();
+  window.scrollTo(0,0);
+}
+
+/* ================= PRACTICE SETUP ================= */
+const defaultPrefs = () => ({ weeks: DB.weeks.length ? [DB.weeks[DB.weeks.length-1].week] : [], topics:[], type:"all", diff:[1,2,3], pool:"all", size:10 });
+let PREFS = null;
+
+function filtered(p){
+  const w = new Set(p.weeks), t = new Set(p.topics), d = new Set(p.diff);
+  return DB.questions.filter(q =>
+    w.has(q.week) && (t.size === 0 || t.has(q.topic)) && d.has(q.difficulty ?? 2) &&
+    (p.type === "all" || (p.type === "mcq" ? q.type === "mcq" : q.type !== "mcq")) &&
+    (p.pool === "all" || (p.pool === "unseen" ? !PROG[q.id] : PROG[q.id]?.last === 0)));
+}
+
+function renderSetup(){
+  if(!PREFS){
+    PREFS = { ...defaultPrefs(), ...store.get(K.prefs, {}) };
+    const valid = new Set(DB.weeks.map(w => w.week));
+    PREFS.weeks = PREFS.weeks.filter(w => valid.has(w));
+    if(!PREFS.weeks.length) PREFS.weeks = defaultPrefs().weeks;
+  }
+  const p = PREFS;
+  const v = $("#view");
+  if(!DB.questions.length){ v.innerHTML = `<div class="card empty">No questions have been published yet.</div>`; return; }
+
+  const sess = store.get(K.sess, null);
+  const resume = sess && sess.ids && sess.i < sess.ids.length
+    ? `<div class="notice row"><span>You have an unfinished set (${sess.i}/${sess.ids.length} done).</span><span class="spacer"></span><button class="btn btn-primary" id="resumeBtn" style="padding:8px 14px">Resume</button><button class="btn-link" id="discardBtn">Discard</button></div>` : "";
+
+  const topicsInWeeks = Object.values(DB.topics).filter(t => p.weeks.includes(t.week));
+  const seg = (key, opts) => `<div class="seg" data-key="${key}">${opts.map(([val,lab]) => `<button type="button" data-val="${val}" aria-pressed="${String(p[key]) === String(val)}">${lab}</button>`).join("")}</div>`;
+  const n = filtered(p).length;
+
+  v.innerHTML = `${resume}
+  <div class="card">
+    <h1>Practice</h1>
+    <p class="sub">Pick what to drill. Questions come one at a time, and case parts stay together in order.</p>
+    <div class="label" style="margin-top:20px">Weeks</div>
+    <div class="chips" data-multi="weeks">${DB.weeks.map(w => `<button type="button" class="chip-btn" data-val="${w.week}" aria-pressed="${p.weeks.includes(w.week)}">W${w.week} · ${esc(w.title)}</button>`).join("")}</div>
+    <div class="label">Topics <span style="text-transform:none;font-weight:500">(none selected = all)</span></div>
+    <div class="chips" data-multi="topics">${topicsInWeeks.map(t => `<button type="button" class="chip-btn" data-val="${esc(t.id)}" aria-pressed="${p.topics.includes(t.id)}">${esc(t.name)}</button>`).join("") || `<span class="sub">Select a week first.</span>`}</div>
+    <div class="label">Question type</div>
+    ${seg("type", [["all","All"],["mcq","MCQ"],["short","Short answer"]])}
+    <div class="label">Difficulty</div>
+    <div class="chips" data-multi="diff">${[1,2,3].map(d => `<button type="button" class="chip-btn" data-val="${d}" aria-pressed="${p.diff.includes(d)}">${LVL[d]}</button>`).join("")}</div>
+    <div class="label">Which questions</div>
+    ${seg("pool", [["all","All"],["unseen","New only"],["wrong","Missed last time"]])}
+    <div class="label">Set size</div>
+    ${seg("size", [[10,"10"],[25,"25"],[50,"50"],[0,"All"]])}
+    <div class="row" style="margin-top:22px">
+      <span class="match"><b>${n}</b> question${n===1?"":"s"} match</span><span class="spacer"></span>
+      <button class="btn btn-primary" id="startBtn" ${n ? "" : "disabled"}>Start set</button>
+    </div>
+  </div>`;
+
+  v.querySelectorAll("[data-multi]").forEach(group => group.addEventListener("click", e => {
+    const b = e.target.closest("button"); if(!b) return;
+    const key = group.dataset.multi;
+    const val = key === "topics" ? b.dataset.val : Number(b.dataset.val);
+    const set = new Set(p[key]);
+    set.has(val) ? set.delete(val) : set.add(val);
+    p[key] = [...set];
+    if(key === "weeks"){ const ok = new Set(Object.values(DB.topics).filter(t => set.has(t.week)).map(t => t.id)); p.topics = p.topics.filter(t => ok.has(t)); }
+    store.set(K.prefs, p); renderSetup();
+  }));
+  v.querySelectorAll(".seg").forEach(g => g.addEventListener("click", e => {
+    const b = e.target.closest("button"); if(!b) return;
+    p[g.dataset.key] = g.dataset.key === "size" ? Number(b.dataset.val) : b.dataset.val;
+    store.set(K.prefs, p); renderSetup();
+  }));
+  $("#startBtn")?.addEventListener("click", () => startSet(buildSet(filtered(p), p.size)));
+  $("#resumeBtn")?.addEventListener("click", () => resumeSet(sess));
+  $("#discardBtn")?.addEventListener("click", () => { store.del(K.sess); renderSetup(); });
+}
+
+/* Group case parts into units, shuffle units, fill to size */
+function buildSet(qs, size){
+  const units = [], cases = {};
+  for(const q of qs){
+    if(q.case_id){ if(!cases[q.case_id]){ cases[q.case_id] = []; units.push(cases[q.case_id]); } cases[q.case_id].push(q); }
+    else units.push([q]);
+  }
+  for(const u of units) u.sort((a,b) => String(a.part ?? "").localeCompare(String(b.part ?? "")));
+  const order = shuffle(units);
+  if(!size) return order.flat();
+  const out = [];
+  for(const u of order){
+    if(out.length >= size) break;
+    if(out.length + u.length > size && out.length > 0 && u.length > 1) continue;
+    out.push(...u);
+  }
+  return out;
+}
+
+/* ================= QUIZ ================= */
+let S = null; // session: {items, i, results, checked, choice}
+
+function startSet(items){
+  S = { items, i:0, results:[], checked:false, choice:null };
+  saveSession(); renderQuestion();
+}
+function resumeSet(sess){
+  const byId = Object.fromEntries(DB.questions.map(q => [q.id, q]));
+  const items = sess.ids.map(id => byId[id]).filter(Boolean);
+  if(!items.length){ store.del(K.sess); renderSetup(); return; }
+  S = { items, i:Math.min(sess.i, items.length), results:sess.results || [], checked:false, choice:null };
+  S.i >= S.items.length ? renderResults() : renderQuestion();
+}
+function saveSession(){ if(S) store.set(K.sess, { ids:S.items.map(q => q.id), i:S.i, results:S.results }); }
+
+function parseValues(raw, n){
+  let s = String(raw).replace(/[−–—]/g, "-").replace(/\$/g, "").replace(/\b(m|mn|bn|b|k)\b/gi, "").replace(/[%x×]/gi, "").trim();
+  if(!s) return { error:"Please enter an answer." };
+  let parts = n === 1 ? [s.replace(/,/g, "")] : s.split(/[,;]/);
+  parts = parts.map(t => t.trim()).filter(t => t !== "");
+  if(parts.length !== n) return { error:`Please enter ${n} value${n>1?"s":""}, separated by commas.` };
+  const vals = [], explicit = [];
+  for(const t of parts){
+    let u = t.replace(/\s/g, ""), neg = false;
+    if(/^\(.*\)$/.test(u)){ neg = true; u = u.slice(1, -1); }
+    if(!/^[+-]?\d*\.?\d+$/.test(u)) return { error:`"${t}" isn't a number.` };
+    explicit.push(/^[+-]/.test(u));
+    vals.push((neg ? -1 : 1) * Number(u));
+  }
+  return { vals, explicit };
+}
+const tolOf = (q, i) => Array.isArray(q.tolerance) ? (q.tolerance[i] ?? 0) : (q.tolerance ?? 0);
+const fmtNum = (v, signed) => { const s = Number.isInteger(v) ? String(v) : String(+v.toFixed(2)); return signed && v > 0 ? "+" + s : s; };
+function answerText(q){
+  if(q.type === "mcq"){ const o = (q.options || []).find(o => o.key === q.answer); return `(${q.answer}) ${o ? o.text : ""}`; }
+  return q.answer.map(v => fmtNum(v, q.signed)).join(", ");
+}
+
+function renderQuestion(){
+  const q = S.items[S.i], total = S.items.length;
+  const v = $("#view");
+  const isMcq = q.type === "mcq";
+  const n = isMcq ? 1 : (q.answer || []).length;
+  const caseBox = q.case_stem ? `<div class="case"><b>Case${q.part ? " · Part (" + esc(q.part) + ")" : ""}</b>${esc(q.case_stem)}</div>` : "";
+  const body = isMcq
+    ? `<div class="opts" id="opts">${q.options.map(o => `<button type="button" class="opt" data-key="${esc(o.key)}"><span class="k">${esc(o.key)}</span><span>${esc(o.text)}</span></button>`).join("")}</div>`
+    : `<p class="fmt">Answer format: <code>${esc(q.format || (n > 1 ? "+10, -12, 0" : "120"))}</code>${q.signed ? " · changes need a sign (+ / −) or 0" : ""}</p>
+       <input id="ans" class="field mono" inputmode="text" autocomplete="off" placeholder="${esc(q.format || "")}" aria-label="Your answer">
+       ${q.labels && q.labels.length ? `<p class="labels">Order: ${q.labels.map(esc).join(" → ")}</p>` : ""}
+       <div style="height:16px"></div>`;
+
+  v.innerHTML = `
+  <div class="qhead"><button class="btn-link" id="exitBtn">✕ Exit</button><span class="spacer"></span><span class="count mono">Question ${S.i + 1} of ${total}</span></div>
+  <div class="bar"><span style="width:${pct(S.i, total)}%"></span></div>
+  <article class="card">
+    <div class="meta"><span class="tag">Week ${q.week}</span><span class="tag">${esc(topicName(q.topic))}</span><span class="tag lvl">${LVL[q.difficulty] || "Level 2"}</span></div>
+    ${caseBox}
+    <p class="prompt">${esc(q.prompt)}</p>
+    ${body}
+    <div id="fb"></div>
+    <div class="row" id="actions">
+      <button class="btn btn-primary" id="checkBtn" ${isMcq ? "disabled" : ""}>Check answer</button>
+      <button class="btn-link" id="giveUpBtn">I don't know</button>
+    </div>
+    <div id="expl"></div>
+  </article>`;
+
+  S.checked = false; S.choice = null;
+  $("#exitBtn").addEventListener("click", () => { saveSession(); route("practice"); });
+  $("#checkBtn").addEventListener("click", () => check(false));
+  $("#giveUpBtn").addEventListener("click", () => check(true));
+  if(isMcq){
+    $("#opts").addEventListener("click", e => {
+      const b = e.target.closest(".opt"); if(!b || S.checked) return;
+      S.choice = b.dataset.key;
+      document.querySelectorAll(".opt").forEach(o => o.classList.toggle("sel", o === b));
+      $("#checkBtn").disabled = false;
+    });
+  }else{
+    const inp = $("#ans");
+    inp.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); S.checked ? next() : check(false); } });
+    inp.focus({preventScroll:true});
+  }
+  window.scrollTo(0,0);
+}
+
+function check(gaveUp){
+  if(S.checked) return;
+  const q = S.items[S.i];
+  let correct = false, html = "";
+  if(q.type === "mcq"){
+    if(!gaveUp && !S.choice) return;
+    correct = !gaveUp && S.choice === q.answer;
+    document.querySelectorAll(".opt").forEach(o => {
+      o.disabled = true;
+      if(o.dataset.key === q.answer) o.classList.add("right");
+      else if(o.dataset.key === S.choice) o.classList.add("wrong");
+      o.classList.remove("sel");
+    });
+    html = correct ? `<div class="fb ok"><strong>Correct</strong></div>`
+      : `<div class="fb bad"><strong>${gaveUp ? "Answer" : "Not quite"}</strong>The correct answer is ${esc(answerText(q))}.</div>`;
+  }else{
+    const n = q.answer.length;
+    let parsed = gaveUp ? null : parseValues($("#ans").value, n);
+    if(parsed && parsed.error){ $("#fb").innerHTML = `<div class="fb bad">${esc(parsed.error)}</div>`; return; }
+    const labels = q.labels && q.labels.length === n ? q.labels : null;
+    if(gaveUp){
+      html = `<div class="fb bad"><strong>Answer</strong><span class="mono">${esc(answerText(q))}</span></div>`;
+    }else{
+      const ok = q.answer.map((a, i) => Math.abs(parsed.vals[i] - a) <= tolOf(q, i) + 1e-9);
+      correct = ok.every(Boolean);
+      const lines = n > 1 ? `<ul>${q.answer.map((a, i) => `<li>${labels ? esc(labels[i]) + ": " : ""}you <span class="mono">${esc(fmtNum(parsed.vals[i], q.signed))}</span> ${ok[i] ? "✓" : "✗ → <span class='mono'>" + esc(fmtNum(a, q.signed)) + "</span>"}</li>`).join("")}</ul>` : "";
+      const missingSign = q.signed && parsed.vals.some((v, i) => v > 0 && !parsed.explicit[i]);
+      const tip = correct && missingSign ? `<span class="tip">Exam format tip: write positive changes with a sign, e.g. ${esc(answerText(q))}</span>` : "";
+      const tolNote = correct && q.answer.some((a, i) => tolOf(q, i) > 0) ? `<span class="tip">Model answer: ${esc(answerText(q))}</span>` : "";
+      html = correct ? `<div class="fb ok"><strong>Correct</strong>${lines}${tip}${tolNote}</div>`
+        : `<div class="fb bad"><strong>Not quite</strong>${n > 1 ? lines : "The correct answer is <span class='mono'>" + esc(answerText(q)) + "</span>."}</div>`;
+    }
+    $("#ans").disabled = true;
+  }
+  S.checked = true;
+  record(q, correct);
+  S.results.push({ id:q.id, correct });
+  S.i += 1; saveSession(); S.i -= 1;
+
+  $("#fb").innerHTML = html;
+  const last = S.i + 1 >= S.items.length;
+  $("#actions").innerHTML = `<button class="btn btn-teal" id="explBtn" aria-expanded="false">Show explanation</button><span class="spacer"></span><button class="btn btn-primary" id="nextBtn">${last ? "See results" : "Next question →"}</button>`;
+  $("#explBtn").addEventListener("click", toggleExpl);
+  $("#nextBtn").addEventListener("click", next);
+  $("#nextBtn").focus({preventScroll:true});
+}
+
+function explHTML(q){
+  const e = q.explanation || {};
+  const ww = e.why_wrong && Object.keys(e.why_wrong).length
+    ? `<h4>Why the other options are wrong</h4><ul>${Object.entries(e.why_wrong).map(([k, t]) => `<li><b>(${esc(k)})</b> ${esc(t)}</li>`).join("")}</ul>` : "";
+  const concept = DB.concepts[q.topic] ? `<p style="margin:14px 0 0"><button class="btn-link" data-concept="${esc(q.topic)}">Review concept: ${esc(DB.concepts[q.topic].title)}</button></p>` : "";
+  return `<div class="expl">
+    ${e.summary ? `<h4>Key idea</h4><p style="margin:0">${esc(e.summary)}</p>` : ""}
+    ${e.steps && e.steps.length ? `<h4>Working</h4><ol class="mono">${e.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol>` : ""}
+    ${e.trap ? `<h4>Trap</h4><div class="trap">${esc(e.trap)}</div>` : ""}
+    ${ww}
+    ${e.takeaway ? `<h4>What this tells you</h4><div class="take">${esc(e.takeaway)}</div>` : ""}
+    ${concept}
+  </div>`;
+}
+function toggleExpl(){
+  const q = S.items[S.i], box = $("#expl"), b = $("#explBtn");
+  const open = b.getAttribute("aria-expanded") === "true";
+  box.innerHTML = open ? "" : explHTML(q);
+  b.setAttribute("aria-expanded", String(!open));
+  b.textContent = open ? "Show explanation" : "Hide explanation";
+  box.querySelector("[data-concept]")?.addEventListener("click", ev => openConcept(ev.target.dataset.concept));
+}
+function next(){
+  S.i += 1;
+  if(S.i >= S.items.length){ saveSession(); renderResults(); } else { saveSession(); renderQuestion(); }
+}
+
+function renderResults(){
+  store.del(K.sess);
+  const res = S.results, right = res.filter(r => r.correct).length, p = pct(right, res.length);
+  const byId = Object.fromEntries(S.items.map(q => [q.id, q]));
+  const byTopic = {};
+  for(const r of res){ const t = byId[r.id]?.topic; if(!t) continue; (byTopic[t] ||= {n:0, c:0}); byTopic[t].n++; if(r.correct) byTopic[t].c++; }
+  const wrongItems = res.filter(r => !r.correct).map(r => byId[r.id]).filter(Boolean);
+  const msg = p >= 80 ? "Strong set. Try a harder mix next." : p >= 50 ? "Solid base. Review the explanations for the ones you missed." : "Worth another pass. Open the concept cards, then retry the misses.";
+  $("#view").innerHTML = `
+  <div class="card">
+    <div class="score">
+      <div class="ring" style="--p:${p}"><div class="mono">${p}%</div></div>
+      <div><h1 style="margin-bottom:4px">${right} / ${res.length} correct</h1><p class="sub">${msg}</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>By topic</h2>
+    ${Object.entries(byTopic).map(([t, s]) => { const q = pct(s.c, s.n); return `<div class="trow"><span>${esc(topicName(t))}</span><span class="mono">${s.c}/${s.n}</span><div class="minibar"><span class="${q < 50 ? "lo" : q < 80 ? "mid" : ""}" style="width:${q}%"></span></div></div>`; }).join("")}
+  </div>
+  <div class="row">
+    ${wrongItems.length ? `<button class="btn btn-primary" id="retryBtn">Retry the ${wrongItems.length} I missed</button>` : ""}
+    <button class="btn btn-ghost" id="newBtn">New set</button>
+  </div>`;
+  $("#retryBtn")?.addEventListener("click", () => startSet(buildSet(wrongItems, 0)));
+  $("#newBtn").addEventListener("click", () => route("practice"));
+  window.scrollTo(0,0);
+}
+
+/* ================= CONCEPTS ================= */
+function conceptHTML(c){
+  const f = (c.formulas || []).map(fm => `<div class="formula">
+      ${fm.name ? `<div class="fname">${esc(fm.name)}</div>` : ""}
+      <div class="expr mono">${esc(fm.expr)}</div>
+      ${fm.variables && fm.variables.length ? `<div class="vars">${fm.variables.map(x => `<div class="var"><span class="sym">${esc(x.symbol)}</span><span>${esc(x.meaning)}</span>${x.where ? `<span class="where">Where to find it: ${esc(x.where)}</span>` : ""}</div>`).join("")}</div>` : ""}
+    </div>`).join("");
+  const ex = c.example ? `<h4>Worked example</h4><p style="margin:0 0 8px">${esc(c.example.prompt)}</p>
+      <button class="btn btn-teal reveal" data-reveal>Show solution</button>
+      <div class="hidden" style="margin-top:10px"><ol class="mono" style="margin:0;padding-left:20px">${(c.example.steps || []).map(s => `<li>${esc(s)}</li>`).join("")}</ol>${c.example.answer ? `<p style="margin:8px 0 0"><b>Answer:</b> ${esc(c.example.answer)}</p>` : ""}</div>` : "";
+  const iv = c.interview ? `<h4>Interview question</h4><p style="margin:0 0 8px"><b>${esc(c.interview.question)}</b></p>
+      <button class="btn btn-teal reveal" data-reveal>Show model answer</button>
+      <div class="hidden take" style="margin-top:10px">${esc(c.interview.answer)}</div>` : "";
+  const rel = (c.related || []).filter(r => DB.concepts[r]);
+  return `<div class="cbody">
+    ${f ? `<h4>Formulas</h4>${f}` : ""}
+    ${c.intuition && c.intuition.length ? `<h4>Intuition</h4><ul>${c.intuition.map(s => `<li>${esc(s)}</li>`).join("")}</ul>` : ""}
+    ${ex}
+    ${c.traps && c.traps.length ? `<h4>Exam traps</h4><ul>${c.traps.map(s => `<li>${esc(s)}</li>`).join("")}</ul>` : ""}
+    ${iv}
+    ${rel.length ? `<h4>Related</h4><div class="chips">${rel.map(r => `<button class="chip-btn" data-concept="${esc(r)}">${esc(DB.concepts[r].title)}</button>`).join("")}</div>` : ""}
+    ${c.sources && c.sources.length ? `<div class="srcs">Sources: ${c.sources.map(esc).join(" · ")}</div>` : ""}
+  </div>`;
+}
+function wireConcept(root){
+  root.querySelectorAll("[data-reveal]").forEach(b => b.addEventListener("click", () => { b.nextElementSibling.classList.remove("hidden"); b.remove(); }));
+  root.querySelectorAll("[data-concept]").forEach(b => b.addEventListener("click", () => openConcept(b.dataset.concept)));
+}
+let CONCEPT_WEEK = null;
+function renderConcepts(){
+  const v = $("#view");
+  const weeks = DB.weeks.filter(w => (w.concepts || []).length);
+  if(!weeks.length){ v.innerHTML = `<div class="card empty">No concept cards yet.</div>`; return; }
+  if(CONCEPT_WEEK === null || !weeks.some(w => w.week === CONCEPT_WEEK)) CONCEPT_WEEK = weeks[weeks.length - 1].week;
+  const list = Object.values(DB.concepts).filter(c => c.week === CONCEPT_WEEK);
+  v.innerHTML = `
+  <div class="card" style="padding-bottom:16px">
+    <h1>Concepts</h1><p class="sub">Every formula with each variable explained. Tap a card to open it.</p>
+    <div class="chips" style="margin-top:14px" id="cweeks">${weeks.map(w => `<button class="chip-btn" data-val="${w.week}" aria-pressed="${w.week === CONCEPT_WEEK}">Week ${w.week}</button>`).join("")}</div>
+  </div>
+  ${list.map(c => `<details class="concept"><summary><div><h3 style="margin:0 0 2px">${esc(c.title)}</h3><p class="sub">${esc(c.one_liner)}</p></div></summary>${conceptHTML(c)}</details>`).join("")}`;
+  $("#cweeks").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; CONCEPT_WEEK = Number(b.dataset.val); renderConcepts(); });
+  wireConcept(v);
+}
+function openConcept(id){
+  const c = DB.concepts[id]; if(!c) return;
+  $("#dlgTitle").textContent = c.title;
+  $("#dlgBody").innerHTML = `<p class="sub" style="padding:14px 20px 0">${esc(c.one_liner)}</p>` + conceptHTML(c);
+  wireConcept($("#dlgBody"));
+  const d = $("#conceptDlg");
+  if(typeof d.showModal === "function"){ if(!d.open) d.showModal(); } else d.setAttribute("open", "");
+  $("#dlgBody").scrollTop = 0;
+}
+$("#dlgClose").addEventListener("click", () => $("#conceptDlg").close ? $("#conceptDlg").close() : $("#conceptDlg").removeAttribute("open"));
+$("#conceptDlg").addEventListener("click", e => { if(e.target.id === "conceptDlg") e.target.close(); });
+
+/* ================= PROGRESS ================= */
+function renderProgress(){
+  const all = DB.questions, tried = all.filter(q => PROG[q.id]);
+  const lastRight = tried.filter(q => PROG[q.id].last === 1).length;
+  const wrongNow = tried.length - lastRight;
+  const weekBlocks = DB.weeks.map(w => {
+    const qs = all.filter(q => q.week === w.week);
+    const topics = [...new Set(qs.map(q => q.topic))];
+    const rows = topics.map(t => {
+      const tq = qs.filter(q => q.topic === t), tt = tq.filter(q => PROG[q.id]), tr = tt.filter(q => PROG[q.id].last === 1).length;
+      const acc = pct(tr, tt.length);
+      return `<div class="trow"><span>${esc(topicName(t))}</span><span class="mono" style="font-size:14px;color:var(--muted)">${tt.length}/${tq.length} tried · ${tt.length ? acc + "%" : "–"}</span><div class="minibar"><span class="${!tt.length ? "" : acc < 50 ? "lo" : acc < 80 ? "mid" : ""}" style="width:${pct(tt.length, tq.length)}%"></span></div></div>`;
+    }).join("");
+    return `<div class="card"><h2>Week ${w.week} · ${esc(w.title)}</h2>${rows}</div>`;
+  }).join("");
+  $("#view").innerHTML = `
+  <div class="card">
+    <h1>Your progress</h1>
+    <p class="sub">Saved on this device only. Bar length = share of questions tried; colour = accuracy on your latest attempt.</p>
+    <div class="row" style="margin-top:16px;gap:24px">
+      <div><div class="mono" style="font-size:26px;font-weight:700;color:var(--navy)">${tried.length}/${all.length}</div><div class="sub">questions tried</div></div>
+      <div><div class="mono" style="font-size:26px;font-weight:700;color:var(--navy)">${pct(lastRight, tried.length)}%</div><div class="sub">right on latest try</div></div>
+      <div><div class="mono" style="font-size:26px;font-weight:700;color:var(--bad)">${wrongNow}</div><div class="sub">still to fix</div></div>
+    </div>
+    ${wrongNow ? `<button class="btn btn-primary" style="margin-top:18px" id="fixBtn">Practise the ${wrongNow} still to fix</button>` : ""}
+  </div>
+  ${weekBlocks}
+  <div class="row"><button class="btn-link" id="resetBtn" style="color:var(--bad)">Reset my progress</button></div>`;
+  $("#fixBtn")?.addEventListener("click", () => startSet(buildSet(tried.filter(q => PROG[q.id].last === 0), 0)));
+  $("#resetBtn").addEventListener("click", () => { if(confirm("Reset all saved progress on this device?")){ PROG = {}; store.del(K.prog); store.del(K.sess); renderProgress(); } });
+}
+
+/* ---------- start ---------- */
+(function init(){
+  if(!window.crypto || !crypto.subtle){ $("#gate").classList.remove("hidden"); $("#gateErr").textContent = "This browser can't decrypt the question bank. Please open the site over https in a modern browser."; return; }
+  const saved = store.get(K.pw, null);
+  if(saved) unlock(saved, true); else $("#gate").classList.remove("hidden");
+})();
+</script>
+</body>
+</html>
